@@ -1,0 +1,179 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "dff91628-fdb7-4b64-a49a-9650e3c3e82a",
+      "name": "Telegram Trigger",
+      "webhookId": "ea7d2445-8027-4efb-93d8-b522c69eb33b",
+      "credentials": {
+        "telegramApi": {
+          "id": "9FExtWQ5tQXVc8XZ",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        320,
+        220
+      ],
+      "id": "1611aa44-5a8f-47e5-a6e7-3e1477b23a01",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "57KVEYFjn0btgcDA",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        580,
+        220
+      ],
+      "id": "9256dd8a-dad7-47cf-81eb-22229e22f65b",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "57KVEYFjn0btgcDA",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Write a funny joke about: {{ $json.message.text }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.6,
+      "position": [
+        220,
+        0
+      ],
+      "id": "6e93f073-915d-4c82-93ee-17d839a8d54f",
+      "name": "Joke Maker"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n\t\"score\": 57.0,\n    \"justification\":\"it's a good joke\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        720,
+        220
+      ],
+      "id": "11471e1e-6267-4f5d-9e48-d1689aae532e",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Analyse the following joke and score its punchline with a value between 0.0 and 100.0\n\nProvide a concise one two lines justification of your score at the end.\n\nJoke:{{ $json.text }}",
+        "hasOutputParser": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.6,
+      "position": [
+        580,
+        0
+      ],
+      "id": "c3a710a4-e6a0-4f15-b16c-05c84943b2fe",
+      "name": "Joke Evaluator"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Joke Maker",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Joke Maker",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Joke Evaluator",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Joke Maker": {
+      "main": [
+        [
+          {
+            "node": "Joke Evaluator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Joke Evaluator",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "c0895ce0-19ea-42e1-b944-f404821a41f2",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "331136c8cb4a53dde2574ac454ac51f4beb7042d5179717dc6bbf4dd332a0ebb"
+  },
+  "id": "FJKycHuEC53mZpUK",
+  "tags": []
+}
