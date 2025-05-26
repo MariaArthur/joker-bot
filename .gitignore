@@ -1,0 +1,12 @@
+# Ignore environment variable files (if you use them)
+.env
+
+# Ignore n8n local data folder (if you run n8n locally)
+.n8n/
+
+# Ignore node_modules if you have any JS code
+node_modules/
+
+# Ignore logs and temporary files
+*.log
+*.tmp
